@@ -9,11 +9,11 @@ import static java.util.Arrays.asList;
 public class DifferencialEvolution {
   private final int QTD_POP = 20;
   private final double F = 0.5;
-  private final double CROSSOVER_RATE = 0.5;
+  private final double CROSSOVER_RATE = 0.8;
 
   private final int MAX_VALUE = 20;
   private final int MIN_VALUE = -20;
-  private final int MAX_GEN = 100;
+  private final int MAX_GEN = 10000;
 
   private static final Random random = new Random();
 

@@ -7,7 +7,6 @@
     <list default="true" id="8426bfbc-f006-4b53-87e6-c0b4fa3eab75" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/DifferencialEvolution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/DifferencialEvolution.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Individual.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Individual.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +87,7 @@
       <workItem from="1680186934210" duration="10000" />
       <workItem from="1680360262418" duration="366000" />
       <workItem from="1680529390549" duration="53000" />
-      <workItem from="1681151826954" duration="911000" />
+      <workItem from="1681151826954" duration="2077000" />
     </task>
     <servers />
   </component>
