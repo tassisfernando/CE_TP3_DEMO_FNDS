@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FNDS {
-    public static List<List<Individual>> fnds(List<Individual> listIndividual){
+    public static List<List<Individual>> execute(List<Individual> listIndividual){
         List<Point> listPoint = new ArrayList<>(listIndividual.size());
 
         for (Individual individual : listIndividual) {

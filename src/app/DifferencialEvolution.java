@@ -15,7 +15,7 @@ public class DifferencialEvolution {
   private final int MIN_VALUE = -10;
   private final int MAX_GEN = 100;
 
-  private List<Integer> gensToPlot = Arrays.asList(20, 40, 60, MAX_GEN);
+  private final List<Integer> gensToPlot = Arrays.asList(20, 40, 60, MAX_GEN);
 
   private static final Random random = new Random();
 
@@ -47,7 +47,7 @@ public class DifferencialEvolution {
         intermediatePopulation.add(exp);
       }
 
-      List<List<Individual>> borders = FNDS.fnds(intermediatePopulation);
+      List<List<Individual>> borders = FNDS.execute(intermediatePopulation);
 
       for (List<Individual> border : borders) {
         if (newPop.size() >= QTD_POP) break;
