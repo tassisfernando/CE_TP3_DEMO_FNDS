@@ -1,19 +1,21 @@
 package app;
 
+import utils.FileUtils;
 import model.Individual;
 
+import java.io.IOException;
 import java.util.*;
-
-import static java.util.Arrays.asList;
 
 public class DifferencialEvolution {
   private final int QTD_POP = 20;
   private final double F = 0.5;
   private final double CROSSOVER_RATE = 0.8;
 
-  private final int MAX_VALUE = 20;
-  private final int MIN_VALUE = -20;
-  private final int MAX_GEN = 10000;
+  private final int MAX_VALUE = 10;
+  private final int MIN_VALUE = -10;
+  private final int MAX_GEN = 100;
+
+  private List<Integer> gensToPlot = Arrays.asList(20, 40, 60, MAX_GEN);
 
   private static final Random random = new Random();
 
@@ -30,8 +32,11 @@ public class DifferencialEvolution {
     List<Individual> popInd = generateRandomIndividuals();
     evaluateIndividuals(popInd);
 
+    createPlotFile(popInd, numGen);
+
     while (numGen <= MAX_GEN) {
       List<Individual> newPop = new ArrayList<>(QTD_POP);
+      List<Individual> intermediatePopulation = new ArrayList<>(popInd);
 
       for (int i = 0; i < QTD_POP; i++) {
         Individual u = generateUInd(popInd);
@@ -39,31 +44,37 @@ public class DifferencialEvolution {
         Individual exp = recombine(popInd.get(i), u);
         exp.evaluate();
 
-        if (popInd.get(i).dominates(exp.getFunctionValues())) {
-          newPop.add(popInd.get(i));
-        } else if (exp.dominates(popInd.get(i).getFunctionValues())) {
-          newPop.add(exp);
+        intermediatePopulation.add(exp);
+      }
+
+      List<List<Individual>> borders = FNDS.fnds(intermediatePopulation);
+
+      for (List<Individual> border : borders) {
+        if (newPop.size() >= QTD_POP) break;
+
+        if (border.size() + newPop.size() > QTD_POP) {
+          List<Individual> individuoCD = new CrowdingDistance().evaluate(border);
+          for (Individual individual : individuoCD) {
+            if (newPop.size() < QTD_POP) {
+              newPop.add(individual);
+            } else break;
+          }
+
         } else {
-          newPop.add(getRandomInd(asList(popInd.get(i), exp)));
+          newPop.addAll(border);
         }
       }
 
       popInd = newPop;
       numGen++;
+
+      if (gensToPlot.contains(numGen)) {
+        createPlotFile(popInd, numGen);
+      }
     }
 
     printIndividuals(popInd);
     return popInd.get(0);
-  }
-
-  private Individual getRandomInd(List<Individual> individuals) {
-    int pos = (int) Math.round(Math.random());
-
-    return individuals.get(pos);
-  }
-
-  private void printIndividual(List<Individual> popInd, int numGen) {
-    System.out.printf("Geração: %d - indivíduos: %s \n", numGen, popInd.toString());
   }
 
   private List<Individual> generateRandomIndividuals() {
@@ -90,7 +101,7 @@ public class DifferencialEvolution {
     Individual ind2 = popInd.get(randomIndex2);
     Individual ind3 = popInd.get(randomIndex3);
 
-    double[] val = new double[ind1.getGenes().length];
+    Double[] val = new Double[ind1.getGenes().length];
 
     for (int i = 0; i < val.length; i++) {
       val[i] = ind3.getGenes()[i] + (F * (ind1.getGenes()[i] - ind2.getGenes()[i]));
@@ -119,5 +130,37 @@ public class DifferencialEvolution {
   private void printIndividuals(List<Individual> popInd) {
     System.out.printf("Resultado do processamento após %d gerações: \n", MAX_GEN);
     popInd.forEach(System.out::println);
+  }
+
+  private void createPlotFile(List<Individual> individuals, int numGen) {
+    try {
+      createGensFile(individuals, numGen);
+      createFunctionValuesFile(individuals, numGen);
+    } catch (IOException erro){
+      System.out.printf("Erro: %s", erro.getMessage());
+    }
+  }
+
+  private void createGensFile(List<Individual> individuals, int numGen) throws IOException {
+    String path = "./src/files/gen_"+numGen+"_genes.txt";
+    FileUtils.createFile(path, individuals, false);
+  }
+
+  private void createFunctionValuesFile(List<Individual> individuals, int numGen) throws IOException {
+    String path = "./src/files/gen_"+numGen+"_values.txt";
+    FileUtils.createFile(path, individuals, true);
+  }
+
+  /**
+   * UNUSED METHODS
+   */
+  private Individual getRandomInd(List<Individual> individuals) {
+    int pos = (int) Math.round(Math.random());
+
+    return individuals.get(pos);
+  }
+
+  private void printIndividual(List<Individual> popInd, int numGen) {
+    System.out.printf("Geração: %d - indivíduos: %s \n", numGen, popInd.toString());
   }
 }

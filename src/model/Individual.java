@@ -5,11 +5,13 @@ import java.util.Random;
 
 public class Individual implements Comparable<Individual> {
 
-  private final static int NUM_PROBLEM = 3;
+  private final static int NUM_PROBLEM = 1;
   private final Random random;
 
-  private double[] genes;
-  private double[] functionValues;
+  private Double[] genes;
+  private Double[] functionValues;
+
+  private double crowdingDistance;
 
   private int qtdGenes;
   private int qtdValues;
@@ -43,8 +45,8 @@ public class Individual implements Comparable<Individual> {
         qtdValues = 1;
     }
 
-    this.genes = new double[qtdGenes];
-    this.functionValues = new double[qtdValues];
+    this.genes = new Double[qtdGenes];
+    this.functionValues = new Double[qtdValues];
   }
   private void createRandomGenes(int min, int max) {
     for (int i = 0; i < this.qtdGenes; i++) {
@@ -72,45 +74,29 @@ public class Individual implements Comparable<Individual> {
     }
   }
 
-  public double[] getFunctionValues() {
+  public Double[] getFunctionValues() {
     return functionValues;
   }
 
-  public double[] getGenes() {
+  public Double[] getGenes() {
     return genes;
   }
 
-  public void setGenes(double[] genes) {
+  public void setGenes(Double[] genes) {
     this.genes = genes;
   }
 
-  @Override
-  public int compareTo(Individual another) {
-    if (this.dominates(another.functionValues)) {
-      return 1;
-    }
-
-    if (another.dominates(this.functionValues)) {
-      return -1;
-    }
-
-    return 0;
+  public double getCrowdingDistance() {
+    return crowdingDistance;
   }
 
-  public boolean dominates(double[] anotherFunc) {
-    boolean dominate = false;
+  public void setCrowdingDistance(double crowdingDistance) {
+    this.crowdingDistance = crowdingDistance;
+  }
 
-    for (int i = 0; i < this.functionValues.length; i++) {
-      if (this.functionValues[i] > anotherFunc[i]) {
-        return false;
-      }
-
-      if (this.functionValues[i] < anotherFunc[i]) {
-        dominate = true;
-      }
-    }
-
-    return dominate;
+  @Override
+  public int compareTo(Individual i2) {
+    return Double.compare(i2.crowdingDistance, this.crowdingDistance);
   }
 
   @Override
