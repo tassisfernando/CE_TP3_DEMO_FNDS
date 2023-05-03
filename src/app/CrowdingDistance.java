@@ -1,6 +1,7 @@
 package app;
 
 import model.Individual;
+import model.IndividualComparator;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +24,8 @@ public class CrowdingDistance {
             border.get(borderSize - 1).setCrowdingDistance(Double.POSITIVE_INFINITY);
 
             for (int j = 1; j < borderSize - 1; j++) {
-                Individual previous = border.get(j+1);
-                Individual later = border.get(j-1);
+                Individual previous = border.get(j-1);
+                Individual later = border.get(j+1);
 
                 double aux = (later.getFunctionValues()[i] - previous.getFunctionValues()[i])/
                         (border.get(borderSize - 1).getFunctionValues()[i] - border.get(0).getFunctionValues()[i]);
@@ -34,7 +35,7 @@ public class CrowdingDistance {
             }
         }
 
-        Collections.sort(border);
+        border.sort(new IndividualComparator());
 
         return border;
     }

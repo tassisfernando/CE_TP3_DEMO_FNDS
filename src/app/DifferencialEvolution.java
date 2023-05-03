@@ -13,9 +13,9 @@ public class DifferencialEvolution {
 
   private final int MAX_VALUE = 10;
   private final int MIN_VALUE = -10;
-  private final int MAX_GEN = 100;
+  private final int MAX_GEN = 1000;
 
-  private final List<Integer> gensToPlot = Arrays.asList(20, 40, 60, MAX_GEN);
+  private final List<Integer> gensToPlot = Arrays.asList(20, 40, 60, 80, 100, MAX_GEN);
 
   private static final Random random = new Random();
 
@@ -39,7 +39,7 @@ public class DifferencialEvolution {
       List<Individual> intermediatePopulation = new ArrayList<>(popInd);
 
       for (int i = 0; i < QTD_POP; i++) {
-        Individual u = generateUInd(popInd);
+        Individual u = generateUInd(popInd, i);
 
         Individual exp = recombine(popInd.get(i), u);
         exp.evaluate();
@@ -91,20 +91,31 @@ public class DifferencialEvolution {
     }
   }
 
-  private Individual generateUInd(List<Individual> popInd) {
-    Individual u = new Individual();
-    int randomIndex1 = random.nextInt(QTD_POP);
-    int randomIndex2 = random.nextInt(QTD_POP);
-    int randomIndex3 = random.nextInt(QTD_POP);
+  private Individual generateUInd(List<Individual> popInd, int i) {
+    int randomIndex1 = random.nextInt(QTD_POP - 1);
+    while(randomIndex1 == i){
+      randomIndex1 = random.nextInt(QTD_POP - 1);
+    }
 
+    int randomIndex2 = random.nextInt(QTD_POP - 1);
+    while(randomIndex2 == i || randomIndex2 == randomIndex1){
+      randomIndex2 = random.nextInt(QTD_POP - 1);
+    }
+
+    int randomIndex3 = random.nextInt(QTD_POP - 1);
+    while(randomIndex3 == i || randomIndex3 == randomIndex1 || randomIndex3 == randomIndex2){
+      randomIndex3 = random.nextInt(QTD_POP - 1);
+    }
+
+    Individual u = new Individual();
     Individual ind1 = popInd.get(randomIndex1);
     Individual ind2 = popInd.get(randomIndex2);
     Individual ind3 = popInd.get(randomIndex3);
 
     Double[] val = new Double[ind1.getGenes().length];
 
-    for (int i = 0; i < val.length; i++) {
-      val[i] = ind3.getGenes()[i] + (F * (ind1.getGenes()[i] - ind2.getGenes()[i]));
+    for (int j = 0; j < val.length; j++) {
+      val[j] = ind3.getGenes()[j] + (F * (ind1.getGenes()[j] - ind2.getGenes()[j]));
     }
     u.setGenes(val);
 
@@ -113,6 +124,7 @@ public class DifferencialEvolution {
 
   private Individual recombine(Individual individual, Individual u) {
     Individual son = new Individual(MIN_VALUE, MAX_VALUE);
+    boolean verifyGenes = false;
 
     for (int i = 0; i < individual.getGenes().length; i++) {
       double r = random.nextDouble();
@@ -120,8 +132,14 @@ public class DifferencialEvolution {
       if (r < CROSSOVER_RATE) {
         son.getGenes()[i] = individual.getGenes()[i];
       } else {
+        verifyGenes = true;
         son.getGenes()[i] = u.getGenes()[i];
       }
+    }
+
+    if (!verifyGenes){
+      int r = random.nextInt(individual.getGenes().length);
+      son.getGenes()[r] = u.getGenes()[r];
     }
 
     return son;

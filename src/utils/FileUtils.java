@@ -21,14 +21,19 @@ public class FileUtils {
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         for (Individual individual : individuals) {
             if (isFunctionValues) {
-                bufferedWriter.write(Arrays.toString(individual.getFunctionValues()));
+                bufferedWriter.write(replaceBracket(Arrays.toString(individual.getFunctionValues())));
                 bufferedWriter.newLine();
             } else {
-                bufferedWriter.write(Arrays.toString(individual.getGenes()));
+                bufferedWriter.write(replaceBracket(Arrays.toString(individual.getGenes())));
                 bufferedWriter.newLine();
             }
         }
         bufferedWriter.close();
         fileWriter.close();
+    }
+
+    public static String replaceBracket(String string) {
+        string = string.replace("[", "(");
+        return string.replace("]", ")");
     }
 }
