@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Individual implements Comparable<Individual> {
 
-  private final static int NUM_PROBLEM = 1;
+  private final static int NUM_PROBLEM = 3;
   private final Random random;
 
   private Double[] genes;
